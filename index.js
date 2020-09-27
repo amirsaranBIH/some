@@ -1,4 +1,4 @@
-var stage = new createjs.Stage("canvass");
+var stage = new createjs.Stage("canvas");
 
 
 var con = new createjs.Container();
