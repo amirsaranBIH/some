@@ -11,6 +11,13 @@ export class AppComponent {
   private sideStage: Stage;
   private mainStage: Stage;
 
+  private toolboxContainer: Container;
+  private projectUsersContainer: Container;
+  private usersContainer: Container;
+  private calendarDaysContainer: Container;
+  private calendarGridContainer: Container;
+  private userStatsContainer: Container;
+
   private sideSectionWidth = 300;
   private topSectionHeight = 150;
   private bottomSectionHeight = 200;
@@ -21,42 +28,46 @@ export class AppComponent {
 
     this.createSideContainers();
     this.createMainContainers();
-    console.log(this.sideStage)
-    console.log(this.mainStage)
   }
 
   private createSideContainers() {
-    const toolboxContainer = new Container(0, 0, this.sideStage.getWidth, this.topSectionHeight);
-    toolboxContainer.setBackground = 'red';
-    toolboxContainer.setName = 'toolbox-container';
-    const projectUsersContainer = new Container(0, this.topSectionHeight, this.sideStage.getWidth, this.sideStage.getHeight - this.topSectionHeight - this.bottomSectionHeight);
-    projectUsersContainer.setBackground = 'blue';
-    projectUsersContainer.setName = 'project-users-container';
-    projectUsersContainer.addHorizontalScrollbar();
-    const usersContainer = new Container(0, this.sideStage.getHeight - this.bottomSectionHeight, this.sideStage.getWidth, this.bottomSectionHeight);
-    usersContainer.setBackground = 'green';
-    usersContainer.setName = 'users-container';
+    this.toolboxContainer = new Container(0, 0, this.sideStage.getWidth(), this.topSectionHeight);
+    this.toolboxContainer.setBackground('red');
+    this.toolboxContainer.setName('toolbox-container');
 
-    this.sideStage.addChild(projectUsersContainer);
-    this.sideStage.addChild(toolboxContainer);
-    this.sideStage.addChild(usersContainer);
+    this.projectUsersContainer = new Container(0, this.topSectionHeight, this.sideStage.getWidth(), this.sideStage.getHeight() - this.topSectionHeight - this.bottomSectionHeight);
+    this.projectUsersContainer.setBackground('blue');
+    this.projectUsersContainer.setName('project-users-container');
+    this.projectUsersContainer.addHorizontalScrollbar();
+
+    this.usersContainer = new Container(0, this.sideStage.getHeight() - this.bottomSectionHeight, this.sideStage.getWidth(), this.bottomSectionHeight);
+    this.usersContainer.setBackground('green');
+    this.usersContainer.setName('users-container');
+
+    this.sideStage.addChild(this.projectUsersContainer);
+    this.sideStage.addChild(this.toolboxContainer);
+    this.sideStage.addChild(this.usersContainer);
   }
 
   private createMainContainers() {
-    const calendarDaysContainer = new Container(0, 0, this.mainStage.getWidth, this.topSectionHeight);
-    calendarDaysContainer.setBackground = 'purple';
-    calendarDaysContainer.setName = 'calendar-days-container';
-    const calendarGridContainer = new Container(0, this.topSectionHeight, this.mainStage.getWidth, this.mainStage.getHeight - this.topSectionHeight - this.bottomSectionHeight);
-    calendarGridContainer.setBackground = 'yellow';
-    calendarGridContainer.setName = 'calendar-grid-container';
-    calendarGridContainer.addVerticalScrollbar();
-    calendarGridContainer.addHorizontalScrollbar();
-    const userStatsContainer = new Container(0, this.mainStage.getHeight - this.bottomSectionHeight, this.mainStage.getWidth, this.bottomSectionHeight);
-    userStatsContainer.setBackground = 'brown';
-    userStatsContainer.setName = 'user-stats-container';
+    this.calendarDaysContainer = new Container(0, 0, this.mainStage.getWidth(), this.topSectionHeight);
+    this.calendarDaysContainer.setBackground('purple');
+    this.calendarDaysContainer.setName('calendar-days-container');
 
-    this.mainStage.addChild(calendarGridContainer);
-    this.mainStage.addChild(calendarDaysContainer);
-    this.mainStage.addChild(userStatsContainer);
+    this.calendarGridContainer = new Container(0, this.topSectionHeight, this.mainStage.getWidth(), this.mainStage.getHeight() - this.topSectionHeight - this.bottomSectionHeight);
+    this.calendarGridContainer.setBackground('yellow');
+    this.calendarGridContainer.setName('calendar-grid-container');
+    this.calendarGridContainer.addVerticalScrollbar();
+    this.calendarGridContainer.addHorizontalScrollbar();
+    this.calendarGridContainer.getVerticalScrollbar().addContainerToYScrollConnections(this.calendarDaysContainer);
+    this.calendarGridContainer.getHorizontalScrollbar().addContainerToXScrollConnections(this.projectUsersContainer);
+    
+    this.userStatsContainer = new Container(0, this.mainStage.getHeight() - this.bottomSectionHeight, this.mainStage.getWidth(), this.bottomSectionHeight);
+    this.userStatsContainer.setBackground('brown');
+    this.userStatsContainer.setName('user-stats-container');
+
+    this.mainStage.addChild(this.calendarGridContainer);
+    this.mainStage.addChild(this.calendarDaysContainer);
+    this.mainStage.addChild(this.userStatsContainer);
   }
 }
