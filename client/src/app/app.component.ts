@@ -41,6 +41,8 @@ export class AppComponent {
     this.createMainContainers();
     this.calendar = this.generateCalendar();
     this.renderCalendarDays();
+    this.calendarGridContainer.getVerticalScrollbar().addContainerToScrollConnections(this.projectUsersContainer);
+    this.calendarGridContainer.getHorizontalScrollbar().addContainerToScrollConnections(this.calendarDaysContainer);
   }
 
   private createSideContainers() {
@@ -72,8 +74,6 @@ export class AppComponent {
     this.calendarGridContainer.setName('calendar-grid-container');
     this.calendarGridContainer.addVerticalScrollbar();
     this.calendarGridContainer.addHorizontalScrollbar();
-    this.calendarGridContainer.getVerticalScrollbar().addContainerToYScrollConnections(this.calendarDaysContainer);
-    this.calendarGridContainer.getHorizontalScrollbar().addContainerToXScrollConnections(this.projectUsersContainer);
     
     this.userStatsContainer = new Container(0, this.mainStage.getHeight() - this.bottomSectionHeight, this.mainStage.getWidth(), this.bottomSectionHeight);
     this.userStatsContainer.setBackgroundColor('brown');
