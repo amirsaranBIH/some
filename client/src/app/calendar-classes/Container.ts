@@ -3,89 +3,116 @@ import { Scrollbar } from "./Scrollbar";
 declare var createjs;
 
 export class Container {
-    private createjsObject: any;
+    private createjsContainer: any;
+    private parent: any;
     private innerContainer: Container;
-    private backgroundShape: any;
+    public backgroundShape: any;
+    private backgroundColor: string;
+    private backgroundBorderWeight: number;
+    private backgroundBorderColor: string;
     private children = [];
     private verticalScrollbar: Scrollbar;
     private horizontalScrollbar: Scrollbar;
 
     constructor(x, y, width, height) {
-        this.createjsObject = new createjs.Container();
-        this.createjsObject.x = x;
-        this.createjsObject.y = y;
-        this.createjsObject.width = width;
-        this.createjsObject.height = height;
+        this.createjsContainer = new createjs.Container();
+        this.createjsContainer.x = x;
+        this.createjsContainer.y = y;
+        this.createjsContainer.width = width;
+        this.createjsContainer.height = height;
         this.setBounds({ x, y, width, height });
     }
 
-    getX() { return this.createjsObject.x; }
-    setX(x: number) { this.createjsObject.x = x; }
+    getX() { return this.createjsContainer.x; }
+    setX(x: number) { this.createjsContainer.x = x; }
 
-    getY() { return this.createjsObject.y; }
-    setY(y: number) { this.createjsObject.y = y; }
+    getY() { return this.createjsContainer.y; }
+    setY(y: number) { this.createjsContainer.y = y; }
     
-    getWidth() { return this.createjsObject.width; }
+    getWidth() { return this.createjsContainer.width; }
     setWidth(width: number) {
-        this.createjsObject.width = width;
+        this.createjsContainer.width = width;
         if (this.backgroundShape) {
-            this.updateBackground(this.backgroundShape.graphics.instructions[2].style);
+            this.updateBackground();
         }
     }
 
-    getHeight() { return this.createjsObject.height; }
+    getHeight() { return this.createjsContainer.height; }
     setHeight(height: number) {
-        this.createjsObject.height = height;
+        this.createjsContainer.height = height;
         if (this.backgroundShape) {
-            this.updateBackground(this.backgroundShape.graphics.instructions[2].style);
+            this.updateBackground();
         }
     }
 
-    getName() { return this.createjsObject.name; }
-    setName(name: string) { this.createjsObject.name = name; }
+    getName() { return this.createjsContainer.name; }
+    setName(name: string) { this.createjsContainer.name = name; }
 
-    getBackground() { return this.backgroundShape; }
-    setBackground(background: string) {
-        if (this.backgroundShape) {
-            this.updateBackground(background);
-        } else {
-            this.addBackground(background);
-        }
+    getBackgroundColor() { return this.backgroundColor; }
+    setBackgroundColor(backgroundColor: string) {
+        this.backgroundColor = backgroundColor;
+        this.setBackground();
     }
 
-    getBounds() { return this.createjsObject.getBounds(); }
-    setBounds(bounds) { this.createjsObject.setBounds(bounds.x, bounds.y, bounds.width, bounds.height); }
+    getBounds() { return this.createjsContainer.getBounds(); }
+    setBounds(bounds) { this.createjsContainer.setBounds(bounds.x, bounds.y, bounds.width, bounds.height); }
     
     getVerticalScrollbar() { return this.verticalScrollbar; }
     getHorizontalScrollbar() { return this.horizontalScrollbar; }
 
-    getCreatejs() { return this.createjsObject; }
+    getCreatejs() { return this.createjsContainer; }
+
+    getParent() { return this.parent; }
+    setParent(parent) { return this.parent = parent; }
 
     addChild(child) {
         this.children.push(child);
-        this.createjsObject.addChild(child.getCreatejs());
+        this.createjsContainer.addChild(child.getCreatejs());
+        child.setParent(this);
 
         this.updateBoundsWhenAddingChild(child);
     }
 
-    private updateBackground(background: string) {
-        this.backgroundShape.graphics.clear().beginFill(background).drawRect(0, 0, this.getWidth(), this.getHeight()).endFill()
+    private setBackground() {
+        if (this.backgroundShape) {
+            this.updateBackground();
+        } else {
+            this.addBackground();
+        }
     }
 
-    private addBackground(background: string) {
-        this.backgroundShape = new createjs.Shape();
-        this.backgroundShape.graphics.clear().beginFill(background).drawRect(0, 0, this.getWidth(), this.getHeight()).endFill();
-        this.backgroundShape.name = 'background';
-        this.createjsObject.addChild(this.backgroundShape);
+    private updateBackground() {
+        this.backgroundShape.graphics
+            .clear()
+            .beginFill(this.backgroundColor)
+            .setStrokeStyle(this.backgroundBorderWeight)
+            .beginStroke(this.backgroundBorderColor)
+            .drawRect(0, 0, this.getWidth(), this.getHeight())
+            .endFill()
     }
+    
+    private addBackground() {
+        this.backgroundShape = new createjs.Shape();
+        this.backgroundShape.name = 'background';
+        this.updateBackground();
+        this.createjsContainer.addChild(this.backgroundShape);
+    }
+    
+    setBorder(weight, color) {
+        this.backgroundBorderWeight = weight;
+        this.backgroundBorderColor = color;
+
+        this.setBackground();
+	}
 
     private updateBoundsWhenAddingChild(child) {
         const bounds = this.getBounds();
+        const childBounds = child.getBounds();
 
-        if (child.x < bounds.x) bounds.x = child.x;
-        if (child.y < bounds.y) bounds.y = child.y;
-        if (child.width > bounds.width) bounds.width = child.width;
-        if (child.height > bounds.height) bounds.height = child.height;
+        if (childBounds.x < bounds.x) bounds.x = childBounds.x;
+        if (childBounds.y < bounds.y) bounds.y = childBounds.y;
+        if (childBounds.width > bounds.width) bounds.width = childBounds.width;
+        if (childBounds.height > bounds.height) bounds.height = childBounds.height;
 
         this.setBounds(bounds);
     }
@@ -98,11 +125,8 @@ export class Container {
         }
 
         this.addChild(this.verticalScrollbar);
-        
         this.innerContainer.setWidth(this.innerContainer.getWidth() - this.verticalScrollbar.getVerticalScrollbarSize());
-
         this.removeScrollOverlapWhenBothScrollsActive();
-
         this.verticalScrollbar.addContainerToYScrollConnections(this.innerContainer);
     }
 
@@ -114,11 +138,8 @@ export class Container {
         }
 
         this.addChild(this.horizontalScrollbar);
-
         this.innerContainer.setHeight(this.innerContainer.getHeight() - this.horizontalScrollbar.getHorizontalScrollbarSize());
-
         this.removeScrollOverlapWhenBothScrollsActive();
-
         this.horizontalScrollbar.addContainerToXScrollConnections(this.innerContainer);
     }
 
@@ -136,6 +157,6 @@ export class Container {
     }
 
     addEvent(event, eventHandler) {
-        this.createjsObject.addEventListener(event, eventHandler);
+        this.createjsContainer.addEventListener(event, eventHandler);
     }
 }

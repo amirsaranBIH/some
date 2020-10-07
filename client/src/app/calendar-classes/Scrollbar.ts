@@ -1,14 +1,15 @@
 declare var createjs;
 
 export class Scrollbar {
-    private axis: string;
-    private parentBounds: any;
-    
-    private createjsObject: any;
+    private createjsScrollbar: any;
+    private parent: any;
     private slider: any;
     private backgroundShape: any;
     private containerXScrollConnections = [];
     private containerYScrollConnections = [];
+
+    private axis: string;
+    private parentBounds: any;
 
     private verticalScrollbarSize = 20;
     private horizontalScrollbarSize = 20;
@@ -17,53 +18,60 @@ export class Scrollbar {
         this.parentBounds = parentBounds;
         this.axis = axis;
 
-        this.createjsObject = new createjs.Container();
+        this.createjsScrollbar = new createjs.Container();
 
+        this.setBounds(parentBounds);
         this.setScrollbarSize();
         this.addBackground('red');
         this.createSlider();
     }
 
-    getX() { return this.createjsObject.x; }
-    getY() { return this.createjsObject.y; }
+    getX() { return this.createjsScrollbar.x; }
+    getY() { return this.createjsScrollbar.y; }
 
-    getWidth() { return this.createjsObject.width; }
-    getHeight() { return this.createjsObject.height; }
+    getWidth() { return this.createjsScrollbar.width; }
+    getHeight() { return this.createjsScrollbar.height; }
     
-    setX(x) { this.createjsObject.x = x; }
-    setY(y) { this.createjsObject.y = y; }
+    setX(x) { this.createjsScrollbar.x = x; }
+    setY(y) { this.createjsScrollbar.y = y; }
 
     getVerticalScrollbarSize() { return this.verticalScrollbarSize; }
     getHorizontalScrollbarSize() { return this.horizontalScrollbarSize; }
 
     setWidth(width) {
-        this.createjsObject.width = width;
+        this.createjsScrollbar.width = width;
         if (this.backgroundShape) {
             this.updateBackground(this.backgroundShape.graphics.instructions[2].style);
         }
     }
     setHeight(height) {
-        this.createjsObject.height = height;
+        this.createjsScrollbar.height = height;
         if (this.backgroundShape) {
             this.updateBackground(this.backgroundShape.graphics.instructions[2].style);
         }
     }
 
-    getCreatejs() { return this.createjsObject; }
+    getBounds() { return this.createjsScrollbar.getBounds(); }
+    setBounds(bounds) { this.createjsScrollbar.setBounds(bounds.x, bounds.y, bounds.width, bounds.height); }
+
+    getCreatejs() { return this.createjsScrollbar; }
+
+    getParent() { return this.parent; }
+    setParent(parent) { return this.parent = parent; }
 
     private setScrollbarSize() {
         switch (this.axis) {
             case 'vertical':
-                this.createjsObject.x = this.parentBounds.width - this.verticalScrollbarSize;
-                this.createjsObject.y = 0;
-                this.createjsObject.width = this.verticalScrollbarSize;
-                this.createjsObject.height = this.parentBounds.height;
+                this.createjsScrollbar.x = this.parentBounds.width - this.verticalScrollbarSize;
+                this.createjsScrollbar.y = 0;
+                this.createjsScrollbar.width = this.verticalScrollbarSize;
+                this.createjsScrollbar.height = this.parentBounds.height;
                 break;
             case 'horizontal':
-                this.createjsObject.x = 0;
-                this.createjsObject.y = this.parentBounds.height - this.horizontalScrollbarSize;
-                this.createjsObject.width = this.parentBounds.width;
-                this.createjsObject.height = this.horizontalScrollbarSize;
+                this.createjsScrollbar.x = 0;
+                this.createjsScrollbar.y = this.parentBounds.height - this.horizontalScrollbarSize;
+                this.createjsScrollbar.width = this.parentBounds.width;
+                this.createjsScrollbar.height = this.horizontalScrollbarSize;
                 break;
         }
     }
@@ -72,7 +80,7 @@ export class Scrollbar {
         this.backgroundShape = new createjs.Shape();
         this.backgroundShape.graphics.clear().beginFill(background).drawRect(0, 0, this.getWidth(), this.getHeight()).endFill();
         this.backgroundShape.name = 'background';
-        this.createjsObject.addChild(this.backgroundShape);
+        this.createjsScrollbar.addChild(this.backgroundShape);
     }
 
     private updateBackground(background: string) {
@@ -83,7 +91,7 @@ export class Scrollbar {
         this.slider = new createjs.Shape();
         this.slider.graphics.beginFill('black').drawRect(0, 0, 0, 0);
         this.slider.name = 'slider';
-        this.createjsObject.addChild(this.slider);
+        this.createjsScrollbar.addChild(this.slider);
     }
 
     addContainerToXScrollConnections(container) {
