@@ -1,8 +1,8 @@
-import { Shape } from "./Shape";
+import { DisplayObject } from './DisplayObject';
 
 declare var createjs;
 
-export class DisplayText extends Shape {
+export class DisplayText extends DisplayObject {
     private textValue = '';
     private size = 10;
     private font = 'Arial';
@@ -23,12 +23,12 @@ export class DisplayText extends Shape {
     setAlignment(alignment) {
         switch(alignment) {
             case 'center':
-                const textBounds = this.getBounds();
+                const textBounds = this.createjsObject.getBounds();
                 this.setX((this.parent.getWidth() / 2) - (textBounds.width / 2));
                 this.setY((this.parent.getHeight() / 2) - (textBounds.height / 2));
                 break;
             default: 
-                console.log('invalid alignment suplied')
+                console.error('invalid alignment suplied')
         }
     }
 }

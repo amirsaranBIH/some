@@ -29,8 +29,13 @@ export class Stage {
     getName() { return this.createjsStage.name; }
     setName(name: string) { this.createjsStage.name = name; }
 
-    getBounds() { return this.createjsStage.getBounds(); }
-    setBounds(bounds) { this.createjsStage.setBounds(bounds.x, bounds.y, bounds.width, bounds.height); }
+    getBounds() { return { x: this.createjsStage.x, y: this.createjsStage.y, width: this.createjsStage.width, height: this.createjsStage.height }; }
+    setBounds(bounds) { 
+        this.createjsStage.x = bounds.x;
+        this.createjsStage.y = bounds.y;
+        this.createjsStage.width = bounds.width;
+        this.createjsStage.height = bounds.height;
+    }
 
     getCreatejs() { return this.createjsStage; }
 
@@ -46,18 +51,5 @@ export class Stage {
         this.children.push(child);
         this.createjsStage.addChild(child.getCreatejs());
         child.setParent(this);
-
-        this.updateBoundsWhenAddingChild(child);
-    }
-
-    private updateBoundsWhenAddingChild(child) {
-        const bounds = this.getBounds();
-
-        if (child.x < bounds.x) bounds.x = child.x;
-        if (child.y < bounds.y) bounds.y = child.y;
-        if (child.width > bounds.width) bounds.width = child.width;
-        if (child.height > bounds.height) bounds.height = child.height;
-
-        this.setBounds(bounds);
     }
 }

@@ -1,29 +1,32 @@
-import { Shape } from "./Shape";
 import { Scrollbar } from "./Scrollbar";
+import { DisplayObject } from './DisplayObject';
 
 export class VerticalScrollbar extends Scrollbar {
 
-    constructor(parentBounds: any) {
-        super(parentBounds);
+    constructor(parent: DisplayObject) {
+        super(parent);
 
-        this.slider.width = this.scrollbarSize;
+        this.slider.setHeight(this.scrollbarSize);
     }
 
     setScrollbarSize() {
-        this.setX(this.parentBounds.width - this.scrollbarSize);
+        this.setX(this.parent.getWidth() - this.scrollbarSize);
         this.setY(0);
         this.setWidth(this.scrollbarSize);
-        this.setHeight(this.parentBounds.height);
+        this.setHeight(this.parent.getHeight());
     }
 
     setScrollEvent() {
-        this.slider.addEventListener('mousemove', (e) => {
-            const y = this.calculateScrollPosition(e);
-            this.containerScrollConnections.forEach(conn => conn.setY(y));
-        });
+        this.slider.removeEvent('mousemove', this.onMouseMoveEventHanlder);
+        this.slider.addEvent('mousemove', this.onMouseMoveEventHanlder);
     }
 
-    addContainerToScrollConnections(container: Shape) {
+    onMouseMoveEventHanlder(e) {
+        const y = this.calculateScrollPosition(e);
+        this.containerScrollConnections.forEach(conn => conn.setY(y));
+    }
+
+    addContainerToScrollConnections(container: DisplayObject) {
         this.containerScrollConnections.push(container);
 
         let maxHeight = 0;
@@ -31,7 +34,7 @@ export class VerticalScrollbar extends Scrollbar {
             if (c.getBounds().height > maxHeight) maxHeight = c.getBounds().height;
         });
 
-        this.slider.height = (this.getHeight() / maxHeight) * this.getHeight();
+        this.slider.setWidth((this.getHeight() / maxHeight) * this.getHeight());
     }
 
     calculateScrollPosition(e) {

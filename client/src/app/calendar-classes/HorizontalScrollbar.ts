@@ -1,42 +1,48 @@
-import { Shape } from "./Shape";
 import { Scrollbar } from "./Scrollbar";
+import { DisplayObject } from './DisplayObject';
 
 export class HorizontalScrollbar extends Scrollbar {
 
-    constructor(parentBounds: any) {
-        super(parentBounds);
+    constructor(parent: DisplayObject) {
+        super(parent);
 
-        this.slider.height = this.scrollbarSize;
+        this.slider.setHeight(this.scrollbarSize);
     }
 
     setScrollbarSize() {
         this.setX(0);
-        this.setY(this.parentBounds.height - this.scrollbarSize);
-        this.setWidth(this.parentBounds.width);
+        this.setY(this.parent.getHeight() - this.scrollbarSize);
+        this.setWidth(this.parent.getWidth());
         this.setHeight(this.scrollbarSize);
     }
 
     setScrollEvent() {
-        this.slider.addEventListener('mousemove', (e) => {
-            const x = this.calculateScrollPosition(e);
-            this.containerScrollConnections.forEach(conn => conn.setX(x));
-        });
+        // this.slider.removeEvent('mousemove', this.onMouseMoveEventHanlder.bind(this));
+        this.slider.getCreatejs().addEventListener('mousemove', (e) => { console.log(e); this.onMouseMoveEventHanlder(e)});
+        console.log(this.slider);
     }
 
-    addContainerToScrollConnections(container: Shape) {
+    onMouseMoveEventHanlder(e) {
+        console.log(e)
+        const x = this.calculateScrollPosition(e);
+        this.containerScrollConnections.forEach(conn => conn.setX(x));
+    }
+
+    addContainerToScrollConnections(container) {
         this.containerScrollConnections.push(container);
         
         let maxWidth = 0;
         this.containerScrollConnections.forEach(c => {
-            if (c.getBounds().width > maxWidth) maxWidth = c.getBounds().width;
+            if (c.getChildBounds().width > maxWidth) maxWidth = c.getChildBounds().width;
         });
-        console.log(this.containerScrollConnections, maxWidth, this.getWidth(), (this.getWidth() / maxWidth) * this.getWidth())
 
-        this.slider.width = (this.getWidth() / maxWidth) * this.getWidth();
-        console.log(this.slider)
+        this.slider.setWidth((this.getWidth() / maxWidth) * this.getWidth());
+
+        this.setScrollEvent();
     }
 
     calculateScrollPosition(e) {
+        console.log(e)
         return 10;
     }
 }

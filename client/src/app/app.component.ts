@@ -3,6 +3,7 @@ import { Stage } from "./calendar-classes/Stage";
 import { Container } from "./calendar-classes/Container";
 import { DisplayText } from "./calendar-classes/DisplayText";
 import * as moment from 'moment';
+import { Shape } from './calendar-classes/Shape';
 
 declare var createjs;
 
@@ -37,11 +38,17 @@ export class AppComponent {
     this.sideStage = new Stage(0, 0, this.sideSectionWidth, window.innerHeight, 'sideCanvas');
     this.mainStage = new Stage(this.sideSectionWidth, 0, window.innerWidth - this.sideSectionWidth, window.innerHeight, 'mainCanvas');
 
+    // const a = new Container(0, 0, 100, 100);
+    // a.setBackgroundColor('gold');
+    // a.setName('example')
+    // this.mainStage.addChild(a);
+    // a.setWidth(50);
+    // console.log(a)
     this.createSideContainers();
     this.createMainContainers();
     this.calendar = this.generateCalendar();
     this.renderCalendarDays();
-    this.calendarGridContainer.getVerticalScrollbar().addContainerToScrollConnections(this.projectUsersContainer);
+    // this.calendarGridContainer.getVerticalScrollbar().addContainerToScrollConnections(this.projectUsersContainer);
     this.calendarGridContainer.getHorizontalScrollbar().addContainerToScrollConnections(this.calendarDaysContainer);
   }
 
@@ -65,7 +72,7 @@ export class AppComponent {
   }
 
   private createMainContainers() {
-    this.calendarDaysContainer = new Container(0, 0, this.mainStage.getWidth(), this.topSectionHeight);
+    this.calendarDaysContainer = new Container(0, 0, this.mainStage.getWidth() - 20, this.topSectionHeight);
     this.calendarDaysContainer.setBackgroundColor('purple');
     this.calendarDaysContainer.setName('calendar-days-container');
 
