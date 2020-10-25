@@ -60,14 +60,19 @@ export class DateSegment extends AbstractContainer implements IMovable, IResizab
     }
     
     onResize(e) {
-        // console.log(this.pixiObject)
+        console.log(this.getWidth() + e.data.originalEvent.movementX, this.getWidth(), e.data.originalEvent.movementX)
+        let newWidth;
         switch (this.resizeSideClicked) {
             case 'left':
+                newWidth = this.getWidth() - e.data.originalEvent.movementX;
+                if (newWidth < 25) break;
                 this.setX(this.getX() + e.data.originalEvent.movementX);
-                this.setWidth(this.getWidth() - e.data.originalEvent.movementX);
+                this.setWidth(newWidth);
                 break;
             case 'right':
-                this.setWidth(this.getWidth() + e.data.originalEvent.movementX);
+                newWidth = this.getWidth() + e.data.originalEvent.movementX;
+                if (newWidth < 25) break;
+                this.setWidth(newWidth);
                 break;
             case 'none':
                 break;

@@ -8,17 +8,17 @@ export abstract class AbstractPixiObject {
 
     constructor() { }
 
-    getX() { return this.x; }
-    setX(x: number) { this.x = x; }
+    getX() { return this.pixiObject.x; }
+    setX(x: number) { this.pixiObject.x = x; }
 
-    getY() { return this.y; }
-    setY(y: number) { this.y = y; }
+    getY() { return this.pixiObject.y; }
+    setY(y: number) { this.pixiObject.y = y; }
 
     getWidth() { return this.width; }
-    setWidth(width: number) { this.width = width; }
+    setWidth(width: number) { this.width = this.pixiObject.width = width; }
 
     getHeight() { return this.height; }
-    setHeight(height: number) { this.height = height; }
+    setHeight(height: number) { this.height = this.pixiObject.height = height; }
 
     getName() { return this.pixiObject.name; }
     setName(name: string) { this.pixiObject.name = name; }

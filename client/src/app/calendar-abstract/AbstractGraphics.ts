@@ -45,7 +45,7 @@ export abstract class AbstractGraphics extends AbstractPixiObject {
 
         this.pixiObject
             .lineStyle(this.borderWidth, this.borderColor, 1, 0)
-            .drawRect(this.getX(), this.getY(), this.getWidth(), this.getHeight())
+            .drawRect(0, 0, this.getWidth(), this.getHeight())
             .endFill();
 
         if (this.imagePath) {

@@ -10,6 +10,7 @@ export abstract class AbstractContainer extends AbstractGraphics {
 
     addChild(child: AbstractPixiObject) {
         this.pixiObject.addChild(child.getPixiObject());
+        child.setParent(this);
         this.childen.push(child);
     }
 }
