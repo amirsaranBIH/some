@@ -8,36 +8,55 @@ export abstract class AbstractGraphics extends AbstractPixiObject {
     private borderColor = 0x000000;
     private borderWidth = 0;
 
+    private backgroundImageObject;
+    private imagePath: string;
+
     constructor(x: number, y: number, width: number, height: number) {
         super();
         this.pixiObject = new PIXI.Graphics();
         this.setX(x);
         this.setY(y);
-        console.log(this.pixiObject.width, width)
         this.setWidth(width);
-        console.log(this.pixiObject.width)
         this.setHeight(height);
     }
 
     setBackgroundColor(backgroundColor) {
         this.backgroundColor = backgroundColor;
-        this.drawbackgroundAndBorder();
+        this.drawBackgroundAndBorder();
     }
 
     setBorder(color: number, width: number) {
         this.borderColor = color;
         this.borderWidth = width;
-        this.drawbackgroundAndBorder();
+        this.drawBackgroundAndBorder();
     }
 
-    private drawbackgroundAndBorder() {
-        console.log(this.pixiObject, this.getX(), this.getY(), this.getWidth(), this.getHeight())
+    setBackgroundImage(imagePath) {
+        this.imagePath = imagePath;
+        this.drawBackgroundAndBorder();
+    }
+
+    protected drawBackgroundAndBorder() {
+        this.pixiObject.clear();
+
+        if (this.backgroundColor) {
+            this.pixiObject.beginFill(this.backgroundColor);
+        }
+
         this.pixiObject
-            .clear()
-            .beginFill(this.backgroundColor)
             .lineStyle(this.borderWidth, this.borderColor, 1, 0)
             .drawRect(this.getX(), this.getY(), this.getWidth(), this.getHeight())
             .endFill();
-        console.log(this.pixiObject)
+
+        if (this.imagePath) {
+            const texture2 = PIXI.Texture.from(this.imagePath);
+            if (this.backgroundImageObject) {
+                this.backgroundImageObject.width = this.getWidth();
+                this.backgroundImageObject.height = this.getHeight();
+            } else {
+                this.backgroundImageObject = new PIXI.TilingSprite(texture2, this.getWidth(), this.getHeight());
+            }
+            this.pixiObject.addChild(this.backgroundImageObject);
+        } 
     }
 }
