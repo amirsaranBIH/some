@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AbstractScrollbarSlider } from './calendar-abstract/AbstractScrollbarSlider';
 import { CanvasApp } from './calendar-classes/CanvasApp';
 import { DateSegment } from './calendar-classes/DateSegment';
 

@@ -2,6 +2,8 @@ import { AbstractGraphics } from './AbstractGraphics';
 import { IMovable } from '../calendar-interfaces/IMovable';
 
 export abstract class AbstractScrollbarSlider extends AbstractGraphics implements IMovable {
+    static scrollbarSliderSize = 20;
+
     constructor(x: number, y: number, width: number, height: number) {
         super(x, y, width, height);
     }
