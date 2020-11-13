@@ -14,6 +14,7 @@ export abstract class AbstractGraphics extends AbstractPixiObject {
     constructor(x: number, y: number, width: number, height: number) {
         super();
         this.pixiObject = new PIXI.Graphics();
+        console.log(this)
         this.setX(x);
         this.setY(y);
         this.setWidth(width);

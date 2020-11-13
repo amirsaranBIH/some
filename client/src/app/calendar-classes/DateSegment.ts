@@ -37,17 +37,14 @@ export class DateSegment extends AbstractContainer implements IMovable, IResizab
             if (e.data.global.x > (boundX + this.getWidth() - 5)) this.resizeSideClicked = 'right';
 
             if (this.resizeSideClicked !== 'none') {
-                document.body.style.cursor = 'ew-resize';
                 const onResizeEventHandler = this.onResize.bind(this);
 
                 this.pixiObject.on('mousemove', onResizeEventHandler);
                 this.pixiObject.on('mouseup', () => {
-                    document.body.style.cursor = 'auto';
                     this.resizeSideClicked = 'none';
                     this.pixiObject.off('mousemove', onResizeEventHandler)
                 })
                 this.pixiObject.on('mouseupoutside', () => {
-                    document.body.style.cursor = 'auto';
                     this.resizeSideClicked = 'none';
                     this.pixiObject.off('mousemove', onResizeEventHandler)
                 })
@@ -60,7 +57,6 @@ export class DateSegment extends AbstractContainer implements IMovable, IResizab
     }
     
     onResize(e) {
-        console.log(this.getWidth() + e.data.originalEvent.movementX, this.getWidth(), e.data.originalEvent.movementX)
         let newWidth;
         switch (this.resizeSideClicked) {
             case 'left':
